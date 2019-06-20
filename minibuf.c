@@ -22,7 +22,7 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 
 /* creation and destruction functions */
 
-void crunch_minibuffer_new(struct crunch_minibuffer *out, int initial_size) {
+void nom_minibuffer_new(struct nom_minibuffer *out, int initial_size) {
 
 	out->off = 0x00;
 	out->cap = initial_size;
@@ -33,7 +33,7 @@ void crunch_minibuffer_new(struct crunch_minibuffer *out, int initial_size) {
 
 }
 
-void crunch_minibuffer_destroy(struct crunch_minibuffer *b) {
+void nom_minibuffer_destroy(struct nom_minibuffer *b) {
 
 	free(b->buf);
 	free(b);
@@ -42,55 +42,103 @@ void crunch_minibuffer_destroy(struct crunch_minibuffer *b) {
 
 /* bitfield functions */
 
-void crunch_minibuffer_readbit(struct crunch_minibuffer *b, char *out, int off) {
+void nom_minibuffer_readbit(struct nom_minibuffer *b, char *out, int off) {
 
-	*out = (b->buf[off/8] & (1 << (7-(off%8)))) != 0;
+	*out = (b->buf[off/8] >> (7 - (off%8))) & 1;
 
 }
 
-void crunch_minibuffer_readbits(struct crunch_minibuffer *b, int *out, int off, int n) {
+void nom_minibuffer_readbitnext(struct nom_minibuffer *b, char *out) {
+
+	nom_minibuffer_readbit(b, out, b->boff);
+	nom_minibuffer_seekbit(b, 1, 1);
+
+}
+
+void nom_minibuffer_readbits(struct nom_minibuffer *b, int *out, int off, int n) {
 
 	char bout;
 	for (int i = 0; i < n; i++) {
 
-		crunch_minibuffer_readbit(b, &bout, off+i);
+		nom_minibuffer_readbit(b, &bout, off+i);
 		*out = (*out << 1) | bout;
 
 	}
 
 }
 
-void crunch_minibuffer_setbit(struct crunch_minibuffer *b, int off, char data) {
+void nom_minibuffer_readbitsnext(struct nom_minibuffer *b, int *out, int n) {
 
-	switch (data) {
+	nom_minibuffer_readbits(b, out, b->boff, n);
+	nom_minibuffer_seekbit(b, n, 1);
+	
+}
 
-	case 0:
-		b->buf[off] &= ~(1 << (7-(off%8)));
+void nom_minibuffer_setbit(struct nom_minibuffer *b, int off) {
 
-	case 1:
-		b->buf[off] |= (1 << (7-(off%8)));
-
-	}
+	b->buf[off/8] |= (1 << (7-(off%8)));
 
 }
 
-void crunch_minibuffer_setbits(struct crunch_minibuffer *b, int off, int data, int n) {
+void nom_minibuffer_setbitnext(struct nom_minibuffer *b) {
+
+	nom_minibuffer_setbit(b, b->boff);
+	nom_minibuffer_seekbyte(b, 1, 1);
+
+}
+
+void nom_minibuffer_clearbit(struct nom_minibuffer *b, int off) {
+
+	b->buf[off/8] &= ~(1 << (7-(off%8)));
+
+}
+
+void nom_minibuffer_clearbitnext(struct nom_minibuffer *b) {
+
+	nom_minibuffer_clearbit(b, b->boff);
+	nom_minibuffer_seekbyte(b, 1, 1);
+
+}
+
+void nom_minibuffer_setbits(struct nom_minibuffer *b, int off, int data, int n) {
 
 	for (int i = 0; i < n; i++) {
 
-		crunch_minibuffer_setbit(b, off+i, (data >> (n-i-1))&1);
+		if (((data>>(n-i-1))&1) == 0) {
+
+			nom_minibuffer_clearbit(b, off + i);
+
+		} else {
+
+			nom_minibuffer_setbit(b, off + i);
+
+		}
 
 	}
 
 }
 
-void crunch_minibuffer_flipbit(struct crunch_minibuffer *b, int off) {
+void nom_minibuffer_setbitsnext(struct nom_minibuffer *b, int data, int n) {
+
+	nom_minibuffer_setbits(b, b->boff, data, n);
+	nom_minibuffer_seekbyte(b, n, 1);
+
+}
+
+void nom_minibuffer_flipbit(struct nom_minibuffer *b, int off) {
 
 	b->buf[off/8] ^= (1 << (7-(off%8)));
 
 }
 
-void crunch_minibuffer_clearallbits(struct crunch_minibuffer *b) {
+void nom_minibuffer_flipbitnext(struct nom_minibuffer *b) {
+
+	nom_minibuffer_flipbit(b, b->boff);
+	nom_minibuffer_seekbit(b, 1, 1);
+
+}
+
+void nom_minibuffer_clearallbits(struct nom_minibuffer *b) {
 
 	for (int i = 0; i < b->cap; i++) {
 
@@ -100,7 +148,7 @@ void crunch_minibuffer_clearallbits(struct crunch_minibuffer *b) {
 
 }
 
-void crunch_minibuffer_setallbits(struct crunch_minibuffer *b) {
+void nom_minibuffer_setallbits(struct nom_minibuffer *b) {
 
 	for (int i = 0; i < b->cap; i++) {
 
@@ -110,7 +158,7 @@ void crunch_minibuffer_setallbits(struct crunch_minibuffer *b) {
 
 }
 
-void crunch_minibuffer_flipallbits(struct crunch_minibuffer *b) {
+void nom_minibuffer_flipallbits(struct nom_minibuffer *b) {
 
 	for (int i = 0; i < b->cap; i++) {
 
@@ -120,8 +168,7 @@ void crunch_minibuffer_flipallbits(struct crunch_minibuffer *b) {
 
 }
 
-/* if relative < 0, seek to offset off, if relative >= 0, seek foward off bits */
-void crunch_minibuffer_seekbit(struct crunch_minibuffer *b, int off, int relative) {
+void nom_minibuffer_seekbit(struct nom_minibuffer *b, int off, int relative) {
 
 	if (relative < 0) {
 
@@ -135,8 +182,7 @@ void crunch_minibuffer_seekbit(struct crunch_minibuffer *b, int off, int relativ
 
 }
 
-/* if off < 0, provide the number of bits after the internal offset, if off >= 0, provide the number of bits after the provided offset */
-void crunch_minibuffer_afterbit(struct crunch_minibuffer *b, int *out, int off) {
+void nom_minibuffer_afterbit(struct nom_minibuffer *b, int *out, int off) {
 
 	if (off < 0) {
 
@@ -150,22 +196,41 @@ void crunch_minibuffer_afterbit(struct crunch_minibuffer *b, int *out, int off) 
 
 }
 
+void nom_minibuffer_alignbit(struct nom_minibuffer *b) {
+
+	b->boff = b->off*8;
+
+}
+
 /* bytebuffer functions */
 
-void crunch_minibuffer_write(struct crunch_minibuffer *b, int off, int data_length, char *data) {
+void nom_minibuffer_writebytes(struct nom_minibuffer *b, int off, int data_length, char *data) {
 
 	memcpy(b->buf+off, data, data_length*sizeof(char)); 
 	
 }
 
-void crunch_minibuffer_read(struct crunch_minibuffer *b, char *out, int off, int n) {
+void nom_minibuffer_writebytesnext(struct nom_minibuffer *b, int n, char *data) {
+
+	nom_minibuffer_writebytes(b, b->off, n, data);
+	nom_minibuffer_seekbyte(b, n, 1);
+
+}
+
+void nom_minibuffer_readbytes(struct nom_minibuffer *b, char *out, int off, int n) {
 
 	memcpy(out, b->buf+off, n*sizeof(char));
 
 }
 
-/* if relative < 0, seek to offset off, if relative >= 0, seek foward off bytes */
-void crunch_minibuffer_seek(struct crunch_minibuffer *b, int off, int relative) {
+void nom_minibuffer_readbytesnext(struct nom_minibuffer *b, char *out, int n) {
+
+	nom_minibuffer_readbytes(b, out, b->off, n);
+	nom_minibuffer_seekbyte(b, n, 1);
+
+}
+
+void nom_minibuffer_seekbyte(struct nom_minibuffer *b, int off, int relative) {
 
 	if (relative < 0) {
 
@@ -179,8 +244,7 @@ void crunch_minibuffer_seek(struct crunch_minibuffer *b, int off, int relative) 
 
 }
 
-/* if off < 0, provide the number of bytes after the internal offset, if off >= 0, provide the number of bytes after the provided offset */
-void crunch_minibuffer_after(struct crunch_minibuffer *b, int *out, int off) {
+void nom_minibuffer_afterbyte(struct nom_minibuffer *b, int *out, int off) {
 
 	if (off < 0) {
 
@@ -194,9 +258,15 @@ void crunch_minibuffer_after(struct crunch_minibuffer *b, int *out, int off) {
 
 }
 
+void nom_minibuffer_alignbyte(struct nom_minibuffer *b) {
+
+	b->off = b->boff/8;
+
+}
+
 /* generic functions */
 
-void crunch_minibuffer_grow(struct crunch_minibuffer *b, int n) {
+void nom_minibuffer_grow(struct nom_minibuffer *b, int n) {
 
 	char *old = b->buf;
 
@@ -210,65 +280,3 @@ void crunch_minibuffer_grow(struct crunch_minibuffer *b, int n) {
 
 }
 
-void crunch_minibuffer_alignbit(struct crunch_minibuffer *b) {
-
-	b->boff = b->off*8;
-
-}
-
-void crunch_minibuffer_alignbyte(struct crunch_minibuffer *b) {
-
-	b->off = b->boff/8;
-
-}
-
-/* *next variants of some functions */
-
-void crunch_minibuffer_flipbitnext(struct crunch_minibuffer *b) {
-
-	crunch_minibuffer_flipbit(b, b->boff);
-	crunch_minibuffer_seekbit(b, 1, 1);
-
-}
-
-void crunch_minibuffer_readbitnext(struct crunch_minibuffer *b, char *out) {
-
-	crunch_minibuffer_readbit(b, out, b->boff);
-	crunch_minibuffer_seekbit(b, 1, 1);
-
-}
-
-void crunch_minibuffer_readbitsnext(struct crunch_minibuffer *b, int *out, int n) {
-
-	crunch_minibuffer_readbits(b, out, b->boff, n);
-	crunch_minibuffer_seekbit(b, n, 1);
-	
-}
-
-void crunch_minibuffer_readnext(struct crunch_minibuffer *b, char *out, int n) {
-
-	crunch_minibuffer_read(b, out, b->off, n);
-	crunch_minibuffer_seek(b, n, 1);
-
-}
-
-void crunch_minibuffer_setbitnext(struct crunch_minibuffer *b, char data) {
-
-	crunch_minibuffer_setbit(b, b->boff, data);
-	crunch_minibuffer_seek(b, 1, 1);
-
-}
-
-void crunch_minibuffer_setbitsnext(struct crunch_minibuffer *b, int data, int n) {
-
-	crunch_minibuffer_setbits(b, b->boff, data, n);
-	crunch_minibuffer_seek(b, n, 1);
-
-}
-
-void crunch_minibuffer_writenext(struct crunch_minibuffer *b, int n, char *data) {
-
-	crunch_minibuffer_write(b, b->off, n, data);
-	crunch_minibuffer_seek(b, n, 1);
-
-}
