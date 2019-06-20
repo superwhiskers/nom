@@ -22,7 +22,7 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 
 /* creation and destruction functions */
 
-void nom_buffer_new(struct nom_buffer *out, int initial_size) {
+void nom_buffer_new(struct nom_buffer *out, long long int initial_size) {
 
 	out->off = 0x00;
 	out->cap = initial_size;
@@ -42,7 +42,7 @@ void nom_buffer_destroy(struct nom_buffer *b) {
 
 /* bitfield functions */
 
-void nom_buffer_readbit(struct nom_buffer *b, char *out, int off) {
+void nom_buffer_readbit(struct nom_buffer *b, char *out, long long int off) {
 
 	*out = (b->buf[off/8] >> (7 - (off%8))) & 1;
 
@@ -55,7 +55,7 @@ void nom_buffer_readbitnext(struct nom_buffer *b, char *out) {
 
 }
 
-void nom_buffer_readbits(struct nom_buffer *b, int *out, int off, int n) {
+void nom_buffer_readbits(struct nom_buffer *b, unsigned long long int *out, long long int off, long long int n) {
 
 	char bout;
 	for (int i = 0; i < n; i++) {
@@ -67,14 +67,14 @@ void nom_buffer_readbits(struct nom_buffer *b, int *out, int off, int n) {
 
 }
 
-void nom_buffer_readbitsnext(struct nom_buffer *b, int *out, int n) {
+void nom_buffer_readbitsnext(struct nom_buffer *b, unsigned long long int *out, long long int n) {
 
 	nom_buffer_readbits(b, out, b->boff, n);
 	nom_buffer_seekbit(b, n, 1);
 	
 }
 
-void nom_buffer_setbit(struct nom_buffer *b, int off) {
+void nom_buffer_setbit(struct nom_buffer *b, long long int off) {
 
 	b->buf[off/8] |= (1 << (7-(off%8)));
 
@@ -87,7 +87,7 @@ void nom_buffer_setbitnext(struct nom_buffer *b) {
 
 }
 
-void nom_buffer_clearbit(struct nom_buffer *b, int off) {
+void nom_buffer_clearbit(struct nom_buffer *b, long long int off) {
 
 	b->buf[off/8] &= ~(1 << (7-(off%8)));
 
@@ -100,7 +100,7 @@ void nom_buffer_clearbitnext(struct nom_buffer *b) {
 
 }
 
-void nom_buffer_setbits(struct nom_buffer *b, int off, int data, int n) {
+void nom_buffer_setbits(struct nom_buffer *b, long long int off, unsigned long long int data, long long int n) {
 
 	for (int i = 0; i < n; i++) {
 
@@ -118,14 +118,14 @@ void nom_buffer_setbits(struct nom_buffer *b, int off, int data, int n) {
 
 }
 
-void nom_buffer_setbitsnext(struct nom_buffer *b, int data, int n) {
+void nom_buffer_setbitsnext(struct nom_buffer *b, unsigned long long int data, long long int n) {
 
 	nom_buffer_setbits(b, b->boff, data, n);
 	nom_buffer_seekbyte(b, n, 1);
 
 }
 
-void nom_buffer_flipbit(struct nom_buffer *b, int off) {
+void nom_buffer_flipbit(struct nom_buffer *b, long long int off) {
 
 	b->buf[off/8] ^= (1 << (7-(off%8)));
 
@@ -168,7 +168,7 @@ void nom_buffer_flipallbits(struct nom_buffer *b) {
 
 }
 
-void nom_buffer_seekbit(struct nom_buffer *b, int off, int relative) {
+void nom_buffer_seekbit(struct nom_buffer *b, long long int off, char relative) {
 
 	if (relative < 0) {
 
@@ -182,7 +182,7 @@ void nom_buffer_seekbit(struct nom_buffer *b, int off, int relative) {
 
 }
 
-void nom_buffer_afterbit(struct nom_buffer *b, int *out, int off) {
+void nom_buffer_afterbit(struct nom_buffer *b, long long int *out, long long int off) {
 
 	if (off < 0) {
 
@@ -204,33 +204,33 @@ void nom_buffer_alignbit(struct nom_buffer *b) {
 
 /* bytebuffer functions */
 
-void nom_buffer_writebytes(struct nom_buffer *b, int off, int data_length, char *data) {
+void nom_buffer_writebytes(struct nom_buffer *b, long long int off, long long int data_length, char *data) {
 
 	memcpy(b->buf+off, data, data_length*sizeof(char)); 
 	
 }
 
-void nom_buffer_writebytesnext(struct nom_buffer *b, int n, char *data) {
+void nom_buffer_writebytesnext(struct nom_buffer *b, long long int data_length, char *data) {
 
-	nom_buffer_writebytes(b, b->off, n, data);
-	nom_buffer_seekbyte(b, n, 1);
+	nom_buffer_writebytes(b, b->off, data_length, data);
+	nom_buffer_seekbyte(b, data_length, 1);
 
 }
 
-void nom_buffer_readbytes(struct nom_buffer *b, char *out, int off, int n) {
+void nom_buffer_readbytes(struct nom_buffer *b, char *out, long long int off, long long int n) {
 
 	memcpy(out, b->buf+off, n*sizeof(char));
 
 }
 
-void nom_buffer_readbytesnext(struct nom_buffer *b, char *out, int n) {
+void nom_buffer_readbytesnext(struct nom_buffer *b, char *out, long long int n) {
 
 	nom_buffer_readbytes(b, out, b->off, n);
 	nom_buffer_seekbyte(b, n, 1);
 
 }
 
-void nom_buffer_seekbyte(struct nom_buffer *b, int off, int relative) {
+void nom_buffer_seekbyte(struct nom_buffer *b, long long int off, char relative) {
 
 	if (relative < 0) {
 
@@ -244,7 +244,7 @@ void nom_buffer_seekbyte(struct nom_buffer *b, int off, int relative) {
 
 }
 
-void nom_buffer_afterbyte(struct nom_buffer *b, int *out, int off) {
+void nom_buffer_afterbyte(struct nom_buffer *b, long long int *out, long long int off) {
 
 	if (off < 0) {
 
@@ -266,7 +266,7 @@ void nom_buffer_alignbyte(struct nom_buffer *b) {
 
 /* generic functions */
 
-void nom_buffer_grow(struct nom_buffer *b, int n) {
+void nom_buffer_grow(struct nom_buffer *b, long long int n) {
 
 	char *old = b->buf;
 
