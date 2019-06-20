@@ -28,7 +28,7 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 /* a high-performance buffer type */
 struct nom_buffer {
 	/* you shouldn't modify any of these directly, but you *can* */
-	char            *buf;
+	unsigned char   *buf;
 	long long int    off;
 	long long int    cap;
 	long long int   boff;
@@ -42,10 +42,10 @@ void nom_buffer_new(struct nom_buffer*, long long int);
 void nom_buffer_destroy(struct nom_buffer*);
 
 /* nom_buffer_readbit reads a bit from the buffer at the specified offset */
-void nom_buffer_readbit(struct nom_buffer*, char*, long long int);
+void nom_buffer_readbit(struct nom_buffer*, unsigned char*, long long int);
 
 /* nom_buffer_readbitnext reads the next bit from the buffer at the current offset and moves the offset forward a bit */
-void nom_buffer_readbitnext(struct nom_buffer*, char*);
+void nom_buffer_readbitnext(struct nom_buffer*, unsigned char*);
 
 /* nom_buffer_readbits reads n bits from the buffer at the specified offset */
 void nom_buffer_readbits(struct nom_buffer*, unsigned long long int*, long long int, long long int);
@@ -87,7 +87,7 @@ void nom_buffer_setallbits(struct nom_buffer*);
 void nom_buffer_flipallbits(struct nom_buffer*);
 
 /* nom_buffer_seekbit seeks to bit position off of buffer relative to the current position or exact */
-void nom_buffer_seekbit(struct nom_buffer*, long long int, char);
+void nom_buffer_seekbit(struct nom_buffer*, long long int, unsigned char);
 
 /* nom_buffer_afterbit stores the amount of bits located after the current position or the specified one in out */
 void nom_buffer_afterbit(struct nom_buffer*, long long int*, long long int);
@@ -96,19 +96,19 @@ void nom_buffer_afterbit(struct nom_buffer*, long long int*, long long int);
 void nom_buffer_alignbit(struct nom_buffer*);
 
 /* nom_buffer_writebytes writes a byte array to the buffer at the specified offset */
-void nom_buffer_writebytes(struct nom_buffer*, long long int, long long int, char*);
+void nom_buffer_writebytes(struct nom_buffer*, long long int, long long int, unsigned char*);
 
 /* nom_buffer_writebytesnext writes a byte array to the buffer at the current offset and moves the offset forward the amount of bytes written */
-void nom_buffer_writebytesnext(struct nom_buffer*, long long int, char*);
+void nom_buffer_writebytesnext(struct nom_buffer*, long long int, unsigned char*);
 
 /* nom_buffer_readbytes reads n bytes from the buffer at the specified offset */
-void nom_buffer_readbytes(struct nom_buffer*, char*, long long int, long long int);
+void nom_buffer_readbytes(struct nom_buffer*, unsigned char*, long long int, long long int);
 
 /* nom_buffer_readbytesnext reads n bytes from the buffer at the current offset and moves the offset forward the amount of bytes read */
-void nom_buffer_readbytesnext(struct nom_buffer*, char*, long long int);
+void nom_buffer_readbytesnext(struct nom_buffer*, unsigned char*, long long int);
 
 /* nom_buffer_seekbytes seeks to position off of the buffer relative to the current position or exact */
-void nom_buffer_seekbyte(struct nom_buffer*, long long int, char);
+void nom_buffer_seekbyte(struct nom_buffer*, long long int, unsigned char);
 
 /* nom_buffer_afterbyte stores the amount of bytes located after the current position or the specified one in out */
 void nom_buffer_afterbyte(struct nom_buffer*, long long int*, long long int);

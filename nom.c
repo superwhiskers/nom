@@ -29,7 +29,7 @@ void nom_buffer_new(struct nom_buffer *out, long long int initial_size) {
 	out->boff = 0x00;
 	out->bcap = initial_size*8;
 
-	out->buf = malloc(initial_size*sizeof(char));
+	out->buf = malloc(initial_size*sizeof(unsigned char));
 
 }
 
@@ -42,13 +42,13 @@ void nom_buffer_destroy(struct nom_buffer *b) {
 
 /* bitfield functions */
 
-void nom_buffer_readbit(struct nom_buffer *b, char *out, long long int off) {
+void nom_buffer_readbit(struct nom_buffer *b, unsigned char *out, long long int off) {
 
 	*out = (b->buf[off/8] >> (7 - (off%8))) & 1;
 
 }
 
-void nom_buffer_readbitnext(struct nom_buffer *b, char *out) {
+void nom_buffer_readbitnext(struct nom_buffer *b, unsigned char *out) {
 
 	nom_buffer_readbit(b, out, b->boff);
 	nom_buffer_seekbit(b, 1, 1);
@@ -57,7 +57,7 @@ void nom_buffer_readbitnext(struct nom_buffer *b, char *out) {
 
 void nom_buffer_readbits(struct nom_buffer *b, unsigned long long int *out, long long int off, long long int n) {
 
-	char bout;
+	unsigned char bout;
 	for (int i = 0; i < n; i++) {
 
 		nom_buffer_readbit(b, &bout, off+i);
@@ -168,7 +168,7 @@ void nom_buffer_flipallbits(struct nom_buffer *b) {
 
 }
 
-void nom_buffer_seekbit(struct nom_buffer *b, long long int off, char relative) {
+void nom_buffer_seekbit(struct nom_buffer *b, long long int off, unsigned char relative) {
 
 	if (relative < 0) {
 
@@ -204,33 +204,33 @@ void nom_buffer_alignbit(struct nom_buffer *b) {
 
 /* bytebuffer functions */
 
-void nom_buffer_writebytes(struct nom_buffer *b, long long int off, long long int data_length, char *data) {
+void nom_buffer_writebytes(struct nom_buffer *b, long long int off, long long int data_length, unsigned char *data) {
 
-	memcpy(b->buf+off, data, data_length*sizeof(char)); 
+	memcpy(b->buf+off, data, data_length*sizeof(unsigned char)); 
 	
 }
 
-void nom_buffer_writebytesnext(struct nom_buffer *b, long long int data_length, char *data) {
+void nom_buffer_writebytesnext(struct nom_buffer *b, long long int data_length, unsigned char *data) {
 
 	nom_buffer_writebytes(b, b->off, data_length, data);
 	nom_buffer_seekbyte(b, data_length, 1);
 
 }
 
-void nom_buffer_readbytes(struct nom_buffer *b, char *out, long long int off, long long int n) {
+void nom_buffer_readbytes(struct nom_buffer *b, unsigned char *out, long long int off, long long int n) {
 
-	memcpy(out, b->buf+off, n*sizeof(char));
+	memcpy(out, b->buf+off, n*sizeof(unsigned char));
 
 }
 
-void nom_buffer_readbytesnext(struct nom_buffer *b, char *out, long long int n) {
+void nom_buffer_readbytesnext(struct nom_buffer *b, unsigned char *out, long long int n) {
 
 	nom_buffer_readbytes(b, out, b->off, n);
 	nom_buffer_seekbyte(b, n, 1);
 
 }
 
-void nom_buffer_seekbyte(struct nom_buffer *b, long long int off, char relative) {
+void nom_buffer_seekbyte(struct nom_buffer *b, long long int off, unsigned char relative) {
 
 	if (relative < 0) {
 
@@ -268,7 +268,7 @@ void nom_buffer_alignbyte(struct nom_buffer *b) {
 
 void nom_buffer_grow(struct nom_buffer *b, long long int n) {
 
-	char *old = b->buf;
+	unsigned char *old = b->buf;
 
 	b->buf = malloc(sizeof(*old)+n);
 	memcpy(b->buf, old, sizeof(*old));
