@@ -281,8 +281,7 @@ void nom_buffer_readu16le(struct NomBuffer *b, unsigned *out, long long off,
 	}
 }
 
-void nom_buffer_readu16lenext(struct NomBuffer *b, unsigned *out,
-			      long long n) {
+void nom_buffer_readu16lenext(struct NomBuffer *b, unsigned *out, long long n) {
 	nom_buffer_readu16le(b, out, b->off, n);
 	nom_buffer_seekbyte(b, n * 2, 1);
 }
@@ -295,8 +294,7 @@ void nom_buffer_readu16be(struct NomBuffer *b, unsigned *out, long long off,
 	}
 }
 
-void nom_buffer_readu16benext(struct NomBuffer *b, unsigned *out,
-			      long long n) {
+void nom_buffer_readu16benext(struct NomBuffer *b, unsigned *out, long long n) {
 	nom_buffer_readu16be(b, out, b->off, n);
 	nom_buffer_seekbyte(b, n * 2, 1);
 }
