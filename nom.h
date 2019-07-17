@@ -151,34 +151,34 @@ void nom_buffer_writeu64benext(struct NomBuffer *, long long,
 
 /* nom_buffer_writecomplexle writes an array of integers to the buffer in little endian at the specified offset */
 #define nom_buffer_writecomplexle(b, o, n, d)                                  \
-	_Generic((d), unsigned char                                            \
-		 : nom_buffer_writebytes, unsigned                             \
-		 : nom_buffer_writeu16le, unsigned long                        \
-		 : nom_buffer_writeu32le, unsigned long long                   \
+	_Generic((d), unsigned char *                                           \
+		 : nom_buffer_writebytes, unsigned *                            \
+		 : nom_buffer_writeu16le, unsigned long *                       \
+		 : nom_buffer_writeu32le, unsigned long long *                  \
 		 : nom_buffer_writeu64le)(b, o, n, d)
 
 /* nom_buffer_writecomplexlenext writes an array of integers to the buffer in little endian at the current offset and moves the offset forward the amount of bytes written */
 #define nom_buffer_writecomplexlenext(b, n, d)                                 \
-	_Generic((d), unsigned char                                            \
-		 : nom_buffer_writebytesnext, unsigned                         \
-		 : nom_buffer_writeu16lenext, unsigned long                    \
-		 : nom_buffer_writeu32lenext, unsigned long long               \
+	_Generic((d), unsigned char *                                           \
+		 : nom_buffer_writebytesnext, unsigned *                        \
+		 : nom_buffer_writeu16lenext, unsigned long *                   \
+		 : nom_buffer_writeu32lenext, unsigned long long *              \
 		 : nom_buffer_writeu64lenext)(b, n, d)
 
 /* nom_buffer_writecomplexbe writes an array of integers to the buffer in big endian at the specified offset */
 #define nom_buffer_writecomplexbe(b, o, n, d)                                  \
-	_Generic((d), unsigned char                                            \
-		 : nom_buffer_writebytes, unsigned                             \
-		 : nom_buffer_writeu16be, unsigned long                        \
-		 : nom_buffer_writeu32be, unsigned long long                   \
+	_Generic((d), unsigned char *                                           \
+		 : nom_buffer_writebytes, unsigned *                            \
+		 : nom_buffer_writeu16be, unsigned long *                       \
+		 : nom_buffer_writeu32be, unsigned long long *                  \
 		 : nom_buffer_writeu64be)(b, o, n, d)
 
 /* nom_buffer_writecomplexbenext writes an array of integers to the buffer in big endian at the current offset and moves the offset forward the amount of bytes written */
 #define nom_buffer_writecomplexbenext(b, n, d)                                 \
-	_Generic((d), unsigned char                                            \
-		 : nom_buffer_writebytesnext, unsigned                         \
-		 : nom_buffer_writeu16benext, unsigned long                    \
-		 : nom_buffer_writeu32benext, unsigned long long               \
+	_Generic((d), unsigned char *                                           \
+		 : nom_buffer_writebytesnext, unsigned *                        \
+		 : nom_buffer_writeu16benext, unsigned long *                   \
+		 : nom_buffer_writeu32benext, unsigned long long *              \
 		 : nom_buffer_writeu64benext)(b, n, d)
 
 /* nom_buffer_readbytes reads n bytes from the buffer at the specified offset */
