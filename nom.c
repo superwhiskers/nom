@@ -20,9 +20,6 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 
 #include "nom.h"
 
-// TODO: finish adding in variable endianness/integer size r/w functions
-// TODO: add variable endianness/integer size r/w functions to nom.h
-
 /* creation and destruction functions */
 
 void nom_buffer_new(struct NomBuffer *out, long long initial_size) {
