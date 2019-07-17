@@ -28,7 +28,7 @@ void print_char_array(int size, unsigned char *arr) {
 int main() {
 
 	// create a container for the buffer
-	struct nom_buffer *buf = malloc(sizeof(struct nom_buffer));
+	NomBuffer *buf = malloc(sizeof(NomBuffer));
 
 	// creates a new buffer with four zeroes
 	nom_buffer_new(buf, 4);
