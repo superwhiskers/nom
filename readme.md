@@ -11,8 +11,8 @@ directive
 #define NOM_NOHEAP
 ```
 
-when in no-heap mode, you initialize the type a little differently. here's
-how
+when in no-heap mode, you initialize the buffer a little differently. here's
+how you do it
 
 ```c
 NomBuffer *buf = &(NomBuffer){};
