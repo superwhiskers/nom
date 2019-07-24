@@ -18,7 +18,6 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 
 */
 
-#pragma once
 #ifndef NOM_NOM_H
 #define NOM_NOM_H
 
