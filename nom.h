@@ -22,8 +22,8 @@ along with this program.  if not, see <https://www.gnu.org/licenses/>.
 #define NOM_NOM_H
 
 #include <stdarg.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifdef NOM_NOHEAP
 #ifndef NOM_MAX_BUFFER_SIZE
