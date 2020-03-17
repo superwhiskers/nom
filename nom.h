@@ -330,7 +330,7 @@ void nom_buffer_writeu64benext(struct NomBuffer *b, long long data_length,
 		 : nom_buffer_writebytes, unsigned *                            \
 		 : nom_buffer_writeu16le, unsigned long *                       \
 		 : nom_buffer_writeu32le, unsigned long long *                  \
-		 : nom_buffer_writeu64le)((b), (o), (n), (d)
+		 : nom_buffer_writeu64le)((b), (o), (n), (d))
 
 /* nom_buffer_writecomplexlenext writes an array of integers to the buffer in little endian at the current offset and moves the offset forward the amount of bytes written */
 #define nom_buffer_writecomplexlenext(b, n, d)                                 \
