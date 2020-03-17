@@ -330,7 +330,7 @@ void nom_buffer_writeu64benext(struct NomBuffer *b, long long data_length,
 		 : nom_buffer_writebytes, unsigned *                            \
 		 : nom_buffer_writeu16le, unsigned long *                       \
 		 : nom_buffer_writeu32le, unsigned long long *                  \
-		 : nom_buffer_writeu64le)(b, o, n, d)
+		 : nom_buffer_writeu64le)((b), (o), (n), (d)
 
 /* nom_buffer_writecomplexlenext writes an array of integers to the buffer in little endian at the current offset and moves the offset forward the amount of bytes written */
 #define nom_buffer_writecomplexlenext(b, n, d)                                 \
@@ -338,7 +338,7 @@ void nom_buffer_writeu64benext(struct NomBuffer *b, long long data_length,
 		 : nom_buffer_writebytesnext, unsigned *                        \
 		 : nom_buffer_writeu16lenext, unsigned long *                   \
 		 : nom_buffer_writeu32lenext, unsigned long long *              \
-		 : nom_buffer_writeu64lenext)(b, n, d)
+		 : nom_buffer_writeu64lenext)((b), (n), (d))
 
 /* nom_buffer_writecomplexbe writes an array of integers to the buffer in big endian at the specified offset */
 #define nom_buffer_writecomplexbe(b, o, n, d)                                  \
@@ -346,7 +346,7 @@ void nom_buffer_writeu64benext(struct NomBuffer *b, long long data_length,
 		 : nom_buffer_writebytes, unsigned *                            \
 		 : nom_buffer_writeu16be, unsigned long *                       \
 		 : nom_buffer_writeu32be, unsigned long long *                  \
-		 : nom_buffer_writeu64be)(b, o, n, d)
+		 : nom_buffer_writeu64be)((b), (o), (n), (d))
 
 /* nom_buffer_writecomplexbenext writes an array of integers to the buffer in big endian at the current offset and moves the offset forward the amount of bytes written */
 #define nom_buffer_writecomplexbenext(b, n, d)                                 \
@@ -354,7 +354,7 @@ void nom_buffer_writeu64benext(struct NomBuffer *b, long long data_length,
 		 : nom_buffer_writebytesnext, unsigned *                        \
 		 : nom_buffer_writeu16benext, unsigned long *                   \
 		 : nom_buffer_writeu32benext, unsigned long long *              \
-		 : nom_buffer_writeu64benext)(b, n, d)
+		 : nom_buffer_writeu64benext)((b), (n), (d))
 
 /* nom_buffer_readbytes reads n bytes from the buffer at the specified offset */
 void nom_buffer_readbytes(struct NomBuffer *b, unsigned char *out,
@@ -497,7 +497,7 @@ void nom_buffer_readu64benext(struct NomBuffer *b, unsigned long long *out,
 		 : nom_buffer_readbytes, unsigned *                             \
 		 : nom_buffer_readu16le, unsigned long *                       \
 		 : nom_buffer_readu32le, unsigned long long *                  \
-		 : nom_buffer_readu64le)(b, d, o, n)
+		 : nom_buffer_readu64le)((b), (d), (o), (n))
 
 /* nom_buffer_readcomplexlenext reads n integers from the buffer in little endian at the current offset and moves the offset forward the amount of bytes read */
 #define nom_buffer_readcomplexlenext(b, d, n)                                  \
@@ -505,7 +505,7 @@ void nom_buffer_readu64benext(struct NomBuffer *b, unsigned long long *out,
 		 : nom_buffer_readbytesnext, unsigned *                        \
 		 : nom_buffer_readu16lenext, unsigned long *                   \
 		 : nom_buffer_readu32lenext, unsigned long long *              \
-		 : nom_buffer_readu64lenext)(b, d, n)
+		 : nom_buffer_readu64lenext)((b), (d), (n))
 
 /* nom_buffer_readcomplexbe reads n integers from the buffer in big endian at the specified offset */
 #define nom_buffer_readcomplexbe(b, d, o, n)                                   \
@@ -513,7 +513,7 @@ void nom_buffer_readu64benext(struct NomBuffer *b, unsigned long long *out,
 		 : nom_buffer_readbytes, unsigned *                            \
 		 : nom_buffer_readu16be, unsigned long *                       \
 		 : nom_buffer_readu32be, unsigned long long *                  \
-		 : nom_buffer_readu64be)(b, d, o, n)
+		 : nom_buffer_readu64be)((b), (d), (o), (n))
 
 /* nom_buffer_readcomplexbenext reads n integers from the buffer in big endian at the current offset and moves the offset forward the amount of bytes read */
 #define nom_buffer_readcomplexbenext(b, d, n)                                  \
@@ -521,7 +521,7 @@ void nom_buffer_readu64benext(struct NomBuffer *b, unsigned long long *out,
 		 : nom_buffer_readbytesnext, unsigned *                        \
 		 : nom_buffer_readu16benext, unsigned long *                   \
 		 : nom_buffer_readu32benext, unsigned long long *              \
-		 : nom_buffer_readu64benext)(b, d, n)
+		 : nom_buffer_readu64benext)((b), (d), (n))
 
 /* nom_buffer_afterbyte stores the amount of bytes located after the current position or the specified one in out */
 void nom_buffer_afterbyte(struct NomBuffer *b, long long *out, long long off) {
